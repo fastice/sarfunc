@@ -56,9 +56,9 @@ class sensorDefinitions :
             # registration interpolation params
             regInterp= { 'flags' : '-allowBreaks -padEdges -wdist ','thresh' : 5000, 'ratThresh' : 1}
             # interpolation of offsets 
-            normalInterp= { 'flags' : ' -wdist ','thresh' : 1000, 'ratThresh' : 1,'islandThresh' : 20}
+            normalInterp= { 'flags' : ' -wdist ','thresh' : 500, 'ratThresh' : 1,'islandThresh' : 20}
              # interpolation paramters for fast offsets
-            processFastParams={'kernelSize' : 3, 'thresh' : 1000, 'islandThresh' : 20}
+            processFastParams={'kernelSize' : 3, 'thresh' : 500, 'islandThresh' : 20}
             # interferogram
             intLooksR,intLooksA=9,9
             # integer Complex - True if SLC stored as int16 complex
@@ -215,9 +215,9 @@ class sensorDefinitions :
             regInterp= { 'flags' : '-allowBreaks -padEdges -wdist ','thresh' : 5000, 'ratThresh' : 1}
             #
             # interpolation of offsets 
-            normalInterp= { 'flags' : ' -wdist ','thresh' : 2000, 'ratThresh' : 1,'islandThresh' : 20}
+            normalInterp= { 'flags' : ' -wdist ','thresh' : 500, 'ratThresh' : 1,'islandThresh' : 20}
             # interpolation paramters for fast offsets
-            processFastParams={'kernelSize' : 3, 'thresh' : 2000, 'islandThresh' : 20}
+            processFastParams={'kernelSize' : 3, 'thresh' : 500, 'islandThresh' : 20}
             # interferogram
             intLooksR,intLooksA=9,9
             # integer Complex - True if SLC stored as int16 complex

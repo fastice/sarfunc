@@ -14,7 +14,7 @@ def fixTSX(sensorfile,cwfile,ispfile) :
     u.callMyProg('par_MSP',myArgs=myArgs,screen=True)
     
     
-def checkSARFiles(path,orbit1,frame,sensorInfo,myLogger=None,resetPar=False) :
+def checkSARFiles(path,orbit1,frame,sensorInfo,myLogger=None,resetPar=False,verifyExists=True) :
     ''' check files and build a dictionary with relevant file names
     path - path for slc
     orbit1 - orbit for slc
@@ -53,10 +53,11 @@ def checkSARFiles(path,orbit1,frame,sensorInfo,myLogger=None,resetPar=False) :
     # merge lists
     slcFiles={**slcFiles,**lowResSLCs}
     #
-    for myKey in slcFiles.keys() :
-        slcFile=path+'/'+slcFiles[myKey]
-        if not os.path.exists(slcFile) :
-            u.myerror('missing {0:s}'.format(slcFile))
+    if verifyExists :
+        for myKey in slcFiles.keys() :
+            slcFile=path+'/'+slcFiles[myKey]
+            if not os.path.exists(slcFile) :
+                u.myerror('missing {0:s}'.format(slcFile))
     if myLogger != None :
         myLogger.logReturn('checkSARFiles')
     return slcFiles

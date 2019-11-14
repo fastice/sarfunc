@@ -35,10 +35,11 @@ def offFileNames(offsetFile,scaleFactor,register=False,fastCull=False) :
     # main offsets
     else :
         offTypes +=['sa','sr']
-        offFiles+=['azimuth.offsets.sa','range.offsets.sr']
-        datFiles=['azimuth.offsets.dat','range.offsets.dat']
-    print(offFiles)
-    print(datFiles)
+        #***
+        offFiles+=['azimuth.offsets.slow.sa','range.offsets.slow.sr']
+        datFiles=['azimuth.offsets.slow.sa.dat','range.offsets.slow.sr.dat','azimuth.offsets.dat','range.offsets.dat']
+    #print(offFiles)
+    #print(datFiles)
     return offTypes,offFiles,datFiles
     
 def cullSetupStuff(register,fastCull,scaleFactor,sensorInfo,offsetFile,smoothFile=None,mergeFile=None) :
@@ -134,8 +135,8 @@ def makeCullFile(sensorInfo,offsetFile,orbit1,orbit2,frame,scaleFactor,register=
         # do the merge
         print('#\nmergefast.py {0:s}.cull {1:s}.cull {2:s} {3:s}\n#'.format(offsetFile,
               offsetFile.replace('.speckle','.smooth'),offsetFile.replace('.speckle','.merge'),sensorInfo['sensor']),file=fpCull)
-        # do the interpolation
-        print('processfast.py ',file=fpCull,end='')
+        # do the interpolation: 6/26/2019 added mergeRoot to force correct file
+        print(f'processfast.py -mergeRoot={offsetFile.replace(".speckle",".merge")} ',file=fpCull,end='')
         for myKey in sensorInfo['processFastParams'].keys() :
             print('-{0:s}={1:d} '.format(myKey,sensorInfo['processFastParams'][myKey]),file=fpCull,end='')
         print('\n#',file=fpCull)

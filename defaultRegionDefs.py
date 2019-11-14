@@ -12,8 +12,9 @@ import utilities as u
 class defaultRegionDefs :
     def __init__(self,region) :
         # define regions    /Volumes/insar6/gmap/allGLVel/250smooth/Greenland250smooth
+        # changed from final greenland velocity Greenland250-V1a to Unmasked version Track-Interp250/mosaicOffsetsFullInterp 6/25/2019
         regionsDef={'greenland' : {'epsg' : 3413 , 'dem' : '/Volumes/insar7/ian/fromInsar3/gimp/version3/270m/gimpversion3.0.270m' ,
-                                   'velMap' : '/Volumes/insar6/gmap/allGLVel/release/AllGreenlandMosaic250-V1a/Greenland250-V1' ,
+                                   'velMap' : '/Volumes/insar6/gmap/allGLVel/release/Track-Interp250/mosaicOffsetsFullInterp' ,
                                    'fastmask' : '/Users/ian/greenlandmask/greenlandmask2009fast', 
                                    'mask' : '/Users/ian/greenlandmask/Tops/greenlandmaskTops'},
                     # standard Antarctica

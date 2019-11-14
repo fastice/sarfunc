@@ -144,7 +144,7 @@ def writeInitShifts(initShifts,fpStrack,myPath='') :
         
 def setupStrackInput(slcFiles1,slcFiles2,sensorInfo,orbit1,orbit2,frame,scaleFactor,initShifts,maskFile,
                      register=False,myLogger=None,myPath='',fastTrack=False,fastParams=None,filenameModifier='',
-                     maskPath='',initShiftsPath='') :
+                     maskPath='',initShiftsPath='',setupOnly=False) :
     ''' Set up input file for speckle tracker 
     Note myPath applies to almost everything and is generally going to be .. for fast tracking. 
     maskPath and initShiftsPath are seperate because they reside in . for fast tracking. The seperate paths 
@@ -155,6 +155,7 @@ def setupStrackInput(slcFiles1,slcFiles2,sensorInfo,orbit1,orbit2,frame,scaleFac
     # open input file, determine output file, and scaleDelta and slcScale
     fpStrack,scaleDelta,slcScale,strackFile,outputFile=openStrackInput(sensorInfo,orbit1,orbit2,frame,scaleFactor,
                                                             register=register,filenameModifier=filenameModifier)
+    # this is to make cull only work if some files have been erased.
     #
     writeStrackImages(slcFiles1,slcFiles2,slcScale,orbit2,frame,fpStrack,myPath=myPath)
     # Decide whether to write interferogram to file
