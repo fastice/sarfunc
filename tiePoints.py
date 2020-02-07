@@ -22,6 +22,9 @@ class tiePoints :
         self.lat,self.lon=np.array([]),np.array([])
         self.x,self.y=np.array([]),np.array([])
         self.z=np.array([])
+        self.nocull=None
+        self.pound2=False
+        self.header=[]
         self.vx,self.vy,self.vz=np.array([]),np.array([]),np.array([])
         #
         self.setTieFile(tieFile)
@@ -59,7 +62,31 @@ class tiePoints :
             return x,y
         else :
             u.myerror("lltoxy : proj not defined")
+       
+    def readCullFile(self,cullFile) :
+        ''' read a cull file '''
+        # open file
+        fp=open(cullFile,'r')
+        myParams=eval(fp.readline())
+        print(myParams["tieFile"])
+        print(self.tieFile)
+        cullPoints=[]
+        for line in fp :
+            cullPoints.append(int(line))
+        if len(cullPoints) != myParams["nBad"] :
+            u.myerror(f'reading culled points expected {myParams["nBad"]} but only found {len(cullPoints) }')
+        #
+        fp.close()
+        return np.array(cullPoints)
         
+        
+    def applyCullFile(self,cullFile )  :
+        ''' read a tiepoint cull file and update nocull'''
+        #
+        self.header.append(cullFile)
+        toCull=self.readCullFile(cullFile)
+        if len(toCull) > 0 :
+            self.nocull[toCull]=False
         
     def readTies(self,tieFile=None) :
         ''' read ties, set projection based on hemisphere, convert to x,y (m)'''
@@ -67,21 +94,50 @@ class tiePoints :
         self.checkTieFile()
         #
         fpIn=open(self.tieFile,'r')
+        latv,lonv,zv,vxv,vyv,vzv=[],[],[],[],[],[]
         for line in fpIn :
-            if '&' not in line and ';' not in line :
+            if '#' in line and '2' in line :
+                self.pound2=True
+            if '&' not in line and ';' not in line and '#' not in line :
                 lat,lon,z,vx,vy,vz =[float(x) for x in line.split()[0:6]]
-                self.lat=np.append(self.lat,lat)
-                self.lon=np.append(self.lon,lon)
-                self.z=np.append(self.z,z)
-                self.vx=np.append(self.vx,vx)
-                self.vy=np.append(self.vy,vy)
-                self.vz=np.append(self.vz,vz)
+                latv.append(lat)
+                lonv.append(lon)
+                zv.append(z)
+                vxv.append(vx)
+                vyv.append(vy)
+                vzv.append(vz)
+        self.lat=np.append(self.lat,np.array(latv))
+        self.lon=np.append(self.lon,np.array(lonv))
+        self.z=np.append(self.z,np.array(zv))
+        self.vx=np.append(self.vx,np.array(vxv))
+        self.vy=np.append(self.vy,np.array(vyv))
+        self.vz=np.append(self.vz,np.array(vzv) )   
         self.vh=np.sqrt(self.vx**2 + self.vy**2)       
         fpIn.close()
         # set epsg
         self.setEPSG()
+        #
+        self.nocull=np.ones(self.vx.shape,dtype=bool)
         # do coordinate conversion
         self.x,self.y=self.lltoxym(self.lat,self.lon)
+        
+        
+    def writeTies(self,tieFileOut) :
+        ''' write ties '''
+        #
+        fpOut=open(tieFileOut,'w')
+        # in case type file that needs this.
+        for line in self.header :
+            print(f'; {line}',file=fpOut)
+        if self.pound2 : 
+            print('# 2',file=fpOut)
+        for lat,lon,z,vx,vy,vz,nocull in zip(self.lat,self.lon,self.z,self.vx,self.vy,self.vz,self.nocull) :
+            if nocull :
+                print(f'{lat:10.5f} {lon:10.5f} {z:8.1f} {vx:8.1f} {vy:8.1f} {vz:8.1f}',file=fpOut )
+        print('&',file=fpOut)
+        fpOut.close()
+        # set epsg
+           
         
     def zeroTies(self) :
         return np.abs(self.vh) < 0.00001

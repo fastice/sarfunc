@@ -15,7 +15,7 @@ class defaultRegionDefs :
         # changed from final greenland velocity Greenland250-V1a to Unmasked version Track-Interp250/mosaicOffsetsFullInterp 6/25/2019
         regionsDef={'greenland' : {'epsg' : 3413 , 'dem' : '/Volumes/insar7/ian/fromInsar3/gimp/version3/270m/gimpversion3.0.270m' ,
                                    'velMap' : '/Volumes/insar6/gmap/allGLVel/release/Track-Interp250/mosaicOffsetsFullInterp' ,
-                                   'fastmask' : '/Users/ian/greenlandmask/greenlandmask2009fast', 
+                                   'fastmask' : '/Users/ian/greenlandmask/output2009/greenlandmask2009fast', 
                                    'mask' : '/Users/ian/greenlandmask/Tops/greenlandmaskTops'},
                     # standard Antarctica
                     'antarctica' : {'epsg' : 3031 , 'dem' : '/Volumes/insarb/ian/fromJonathan/newAntarctic/dem1' ,

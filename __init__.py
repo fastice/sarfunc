@@ -1,5 +1,5 @@
 __all__ = ['getDict','checkSARFiles','complex16','putComplexLine','getBinDataLine','sensorDefinitions','makeBaseParams',
-           'makeBaselines','makeInsarInfo','pairPath','setupStrackInput','ifgFilename','sizeOffsets','readOffPoly','defaultRegionDefs','makeCullFile','baselineSV','tiePoints','flatcToCorr']
+           'makeBaselines','makeInsarInfo','pairPath','setupStrackInput','ifgFilename','sizeOffsets','readOffPoly','defaultRegionDefs','makeCullFile','baselineSV','tiePoints','flatcToCorr','parseVelMeta','premet']
 from sarfunc.getDict import getDict
 from sarfunc.checkSARFiles import checkSARFiles
 from sarfunc.putComplexLine import putComplexLine
@@ -19,4 +19,6 @@ from sarfunc.makeCullFile import makeCullFile
 from sarfunc.baselineSV import baselineSV
 from sarfunc.tiePoints import tiePoints
 from sarfunc.flatcToCorr import flatcToCorr
+from sarfunc.parseVelMeta import parseVelMeta
+from sarfunc.premet import premet
 #from sarfunc.S1XMLheader import S1XMLheader
