@@ -10,8 +10,7 @@ import numpy as np
 import pyproj
 
 class tiePoints :
-
-    """ offsets object - use for offset information """
+    """ tiepoints object - use for tiepoints  data """
 
     def __init__(self,tieFile=None ) :
         """ \n\nRead a tiefile and manipulate tie points """
@@ -39,12 +38,14 @@ class tiePoints :
         self.tieFile = tieFile            
 
     def checkTieFile(self) :
+        ''' check tiefile exists '''
         if self.tieFile == None :
             u.myerror("No tiefile specified")
         if not os.path.exists(self.tieFile) :
             u.myerror("tieFile : {0:s} does not exist".format(self.tieFile))
             
     def setEPSG(self) :
+        ''' set epsg based on northern or southern lat '''
         if len(self.lat) <= 0 : 
             u.myerror("Cannot set epsg without valid latlon")
         if(self.lat[0] > 0) :
@@ -56,6 +57,7 @@ class tiePoints :
            
             
     def lltoxym(self,lat,lon):
+        ''' convert ll to xy '''
         # convert lat/lon to xy
         if self.xyproj != None :
             x,y=pyproj.transform(self.llproj,self.xyproj,lon,lat)
@@ -94,29 +96,22 @@ class tiePoints :
         self.checkTieFile()
         #
         fpIn=open(self.tieFile,'r')
-        latv,lonv,zv,vxv,vyv,vzv=[],[],[],[],[],[]
+        tieFields=[latv,lonv,zv,vxv,vyv,vzv]=[],[],[],[],[],[]
         for line in fpIn :
             if '#' in line and '2' in line :
                 self.pound2=True
             if '&' not in line and ';' not in line and '#' not in line :
-                lat,lon,z,vx,vy,vz =[float(x) for x in line.split()[0:6]]
-                latv.append(lat)
-                lonv.append(lon)
-                zv.append(z)
-                vxv.append(vx)
-                vyv.append(vy)
-                vzv.append(vz)
-        self.lat=np.append(self.lat,np.array(latv))
-        self.lon=np.append(self.lon,np.array(lonv))
-        self.z=np.append(self.z,np.array(zv))
-        self.vx=np.append(self.vx,np.array(vxv))
-        self.vy=np.append(self.vy,np.array(vyv))
-        self.vz=np.append(self.vz,np.array(vzv) )   
-        self.vh=np.sqrt(self.vx**2 + self.vy**2)       
+                #lat,lon,z,vx,vy,vz =
+                for x,y in zip(tieFields,[float(x) for x in line.split()[0:6]]) :
+                    y.append(x)
         fpIn.close()
+        #
+        for x,y in zip([self.lat,self.lon,self.z,self.vx,self.vy,self.vz],tieFields) :
+            x.np.apped(y)
+        self.vh=np.sqrt(self.vx**2 + self.vy**2)          
         # set epsg
         self.setEPSG()
-        #
+        # set all to not cull
         self.nocull=np.ones(self.vx.shape,dtype=bool)
         # do coordinate conversion
         self.x,self.y=self.lltoxym(self.lat,self.lon)
@@ -138,32 +133,42 @@ class tiePoints :
         fpOut.close()
         # set epsg
            
-        
+   
     def zeroTies(self) :
+        '''return zero tiepoints locations'''
         return np.abs(self.vh) < 0.00001
+    #
     def NzeroTies(self) :
+        ''' return number of zero tiepoints'''
         return sum(self.zeroTies())   
-    
+    # 
     def allTies(self) :
+        ''' return allTIepoint locations'''
         return np.abs(self.vh) >= 0
-        
+    # 
     def NallTies(self) :
+        ''' return number of tiepoints '''
         return sum(self.allTies()) 
-    
+    #
+    def vRangeTies(self,minv,maxv) :
+        ''' ties in range (minv,maxv) '''
+        return np.logical_and(self.vh >= minv,self.vh <= maxv )
+    # 
     def NvRangeTies(self,minv,maxv) :
+        ''' number of tie points in range (minv,maxv) '''
         return sum(self.vRangeTies(minv,maxv))
-        
+    # return number of tie    
     def NvAllTies(self,minv,maxv) :
         return sum(self.allTies(minv,maxv)) 
         
-    def vRangeTies(self,minv,maxv) :
-        return np.logical_and(self.vh >= minv,self.vh <= maxv )
-        
+    #   
     def llzero(self) :
+        ''' return lat.lon of zero ties'''
         iZero=self.zeroTies()
         return self.lat(iZero),self.lat(iZero)
-    
+    #
     def xykm(self,x,y):
+        ''' return x y coordinates in km'''
         return x/1000.,y/1000.
         
     def xyzerom(self) :
@@ -196,18 +201,24 @@ class tiePoints :
             return np.average(vx[iGood]),np.average(vy[iGood]),np.std(vx[iGood]),np.std(vy[iGood]),sum(iGood)
         return mstd
     
+    
     @_stats
     def zeroStats(self,vel) :
+        ''' pass in vel and get stats of zero points '''
         return self.xyzerokm()
         
     @_stats
     def allStats(self,vel) :
-        return self.xyallkm()    
+        ''' pass in vel and stats of all points'''
+        return self.xyallkm()   
+    
     @_stats
     def vRangeStats(self,vel,minv,maxv) :
+        ''' get stats for tiepoints in range (minv,maxv) '''
         return self.xyvRangekm(minv,maxv)
     
     def _tieVels(func) :
+        ''' interpolate tie values from vel map '''
         def tieV(*args) :
             x,y=func(*args)
             vx,vy,vr=args[1].interpGeo(x,y)
