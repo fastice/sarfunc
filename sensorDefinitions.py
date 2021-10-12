@@ -139,7 +139,8 @@ class sensorDefinitions:
             deltaR, deltaA = 24, 18
             # w = window size, searchMult*maxOffsets = searchwindow range -
             # navg r is for smooth tracking
-            strackwParams = {'wr': 108, 'wa': 64, 'searchMult': 0.5,
+            # Changed searchMult from 0.5 to 1.2 3/8/2021 to allow melange
+            strackwParams = {'wr': 108, 'wa': 64, 'searchMult': 1.2,
                              'navgr': 5, 'navga': 1, 'minFastPts': 20,
                              'minFastRange': 6}
             # registration offsets cull set params (cullst)
@@ -150,6 +151,94 @@ class sensorDefinitions:
             # parameters for normal culling
             normalCull = {'boxSize': 9, 'nGood': 17, 'maxA': 3, 'maxR': 3,
                           'sr': 9, 'sa': 2}
+            # note this changes from prior 13by3 smoothing (both normal & fast)
+            fastCull = {'boxSize': 9, 'nGood': 17, 'maxA': 3, 'maxR': 3,
+                        'sr': 9, 'sa': 2}
+            # registration interpolation params
+            regInterp = {'flags': '-allowBreaks -padEdges -wdist ',
+                         'thresh': 5000, 'ratThresh': 1}
+            # interpolation of offsets
+            normalInterp = {'flags': ' -wdist ', 'thresh': 20,
+                            'ratThresh': 1, 'islandThresh': 20}
+            # interpolation paramters for fast offsets
+            processFastParams = {'kernelSize': 5, 'thresh': 20,
+                                 'islandThresh': 20}
+            # interferogram
+            intLooksR, intLooksA = 10, 2
+            # integer Complex - True if SLC stored as int16 complex
+            IntegerComplex = True
+            # suffix for isp file
+            ispSuffix = '.cw'
+            # insar code
+            ispprog = 'interf_SLCoffShort'
+            #  arguments to for interferogram generation -ins in dict below
+            parg01 = 'slc1'
+            parg02 = 'slc2'
+            parg03 = 'isppar1'
+            parg04 = 'isppar2'
+            parg05 = 'off'
+            parg06 = 'pwr1'
+            parg07 = 'pwr2'
+            parg08 = 'ifg'
+            parg09 = 'regOff'
+            parg10 = 'intLooksR'
+            parg11 = 'intLooksA'
+            # use interferogram in tracking
+            useInt = True
+            # For main speckle tracking (not reg) use only amplitude match -
+            # note if this is true, useInt will be ignored
+            noComplexMatch = False
+            # apply a hanning window (generally the default)
+            applyHanningToComplex = True
+            noComplexRegMatch = False
+            # merge weights- must add to one
+            regW, fastW = 0.5, 0.5
+            # command used to grep info about track
+            grepCMD = 'greptops'
+        elif sensor == 'S1taku':
+            # max days to try and setup pairs
+            maxDays = 36
+            # number of looks in range and azimuth
+            nlooksR, nlooksA = 10, 2
+            # par file for this sensor
+            sensorpar = 'Sentinel-IW.par'
+            # looks for reduced res slcs to use for bootstrapping offsets
+            subSLC = [1]
+            # basename for simulated offsets
+            offsetsBase = 'offsets'
+            # basename for simulated offsets for registration offsets
+            offsetsRegBase = 'offsets.reg'
+            #
+            registerBase = 'register.offsets'
+            # scalefactor for sim registration offsets 1/scaleDelta regular
+            scaleDelta = 4
+            # registration offset range: low (for subsampled slcs) and hi
+            # (for full res slcs) amplitude tracking windows
+            wraLow, wraHi = 72, 96
+            # same for azimuth
+            waaLow, waaHi = 72, 96
+            #
+            wraOffsets, waaOffsets = 72, 32  # offset tracking
+            # complex matching window size
+            wr, wa = 48, 48
+            # starting offsets for speckle tracking
+            rStart, aStart = 180, 180
+            # step size for speckle tracking (e.g, output grid spacing)
+            deltaR, deltaA = 18, 12
+            # w = window size, searchMult*maxOffsets = searchwindow range -
+            # navg r is for smooth tracking
+            # Changed searchMult from 0.5 to 1.2 3/8/2021 to allow melange
+            strackwParams = {'wr': 108, 'wa': 64, 'searchMult': 1.2,
+                             'navgr': 5, 'navga': 1, 'minFastPts': 20,
+                             'minFastRange': 6}
+            # registration offsets cull set params (cullst)
+            regCull = {'boxSize': 5, 'nGood': 9, 'maxA': 6, 'maxR': 4,
+                       'sr': 2, 'sa': 2}
+            # use sim offfsets for culling (sub at beginning and add  at end)
+            useSimWithCull = False
+            # parameters for normal culling
+            normalCull = {'boxSize': 9, 'nGood': 17, 'maxA': 2, 'maxR': 2,
+                          'sr': 7, 'sa': 2}
             # note this changes from prior 13by3 smoothing (both normal & fast)
             fastCull = {'boxSize': 9, 'nGood': 17, 'maxA': 3, 'maxR': 3,
                         'sr': 9, 'sa': 2}
@@ -284,6 +373,7 @@ class sensorDefinitions:
             regW, fastW = 0.5, 0.5
             # command used to grep info about track
             grepCMD = 'grepdate'
+            
         elif sensor == 'TEST':
             # max days to try and setup pairs
             maxDays = 36
