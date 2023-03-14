@@ -26,6 +26,7 @@ class tiePoints:
         self.pound2 = False
         self.header = []
         self.vx, self.vy, self.vz = np.array([]), np.array([]), np.array([])
+        self.weight =  np.array([])
         #
         self.setTieFile(tieFile)
         self.epsg = None
@@ -103,19 +104,22 @@ class tiePoints:
         self.checkTieFile()
         #
         fpIn = open(self.tieFile, 'r')
-        tieFields = [latv, lonv, zv, vxv, vyv, vzv] = [], [], [], [], [], []
+        # tieFields = [latv, lonv, zv, vxv, vyv, vzv, weight] = [], [], [], [], [], [], []
+        tieFields = [[], [], [], [], [], [], [], []]
         for line in fpIn:
             if '#' in line and '2' in line:
                 self.pound2 = True
             if '&' not in line and ';' not in line and '#' not in line:
                 # lat, lon, z, vx, vy, vz =
-                xCol = [float(x) for x in line.split()[0:6]]
+                xCol = [float(x) for x in line.split()]
+                if len(xCol) == 6:
+                    xCol.append(1)
                 for tieField, x in zip(tieFields, xCol):
                     tieField.append(x)
         fpIn.close()
         #
-        for field, tieField in zip(['lat', 'lon', 'z', 'vx', 'vy', 'vz'],
-                                   tieFields):
+        for field, tieField in zip(['lat', 'lon', 'z', 'vx', 'vy', 'vz',
+                                    'weight'], tieFields):
             setattr(self, field, np.append(getattr(self, field), tieField))
         self.vh = np.sqrt(self.vx**2 + self.vy**2)
         # set epsg
@@ -135,12 +139,14 @@ class tiePoints:
             print(f'; {line}', file=fpOut)
         if self.pound2:
             print('# 2', file=fpOut)
-        for lat, lon, z, vx, vy, vz, nocull in zip(self.lat, self.lon, self.z,
-                                                   self.vx, self.vy, self.vz,
-                                                   self.nocull):
+        for lat, lon, z, vx, vy, vz, weight, nocull in zip(self.lat, self.lon,
+                                                           self.z, self.vx,
+                                                           self.vy, self.vz,
+                                                           self.weight,
+                                                           self.nocull):
             if nocull:
                 print(f'{lat:10.5f} {lon:10.5f} {z:8.1f} {vx:8.1f} {vy:8.1f} '
-                      f'{vz:8.1f}', file=fpOut)
+                      f'{vz:8.1f} {weight:8.1f}', file=fpOut)
         print('&', file=fpOut)
         fpOut.close()
         # set epsg

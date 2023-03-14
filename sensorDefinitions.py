@@ -152,7 +152,8 @@ class sensorDefinitions:
             normalCull = {'boxSize': 9, 'nGood': 17, 'maxA': 3, 'maxR': 3,
                           'sr': 9, 'sa': 2}
             # note this changes from prior 13by3 smoothing (both normal & fast)
-            fastCull = {'boxSize': 9, 'nGood': 17, 'maxA': 3, 'maxR': 3,
+            # Updated to open up 11/2/2021
+            fastCull = {'boxSize': 5, 'nGood': 7, 'maxA': 3, 'maxR': 9,
                         'sr': 9, 'sa': 2}
             # registration interpolation params
             regInterp = {'flags': '-allowBreaks -padEdges -wdist ',
