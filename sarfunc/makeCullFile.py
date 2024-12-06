@@ -79,7 +79,12 @@ def cullCommand(offsetFile, cullParams, register, sensorInfo, fpCull):
         print(f' -useSim {sensorInfo["offsetsBase"]} ', file=fpCull, end='')
     # loop through keys - used sorted to maintain consistent order
     for key in sorted(cullParams.keys()):
-        print(' -{0:s} {1:s} '.format(key, str(cullParams[key])),
+        # Hack to double corrThresh for smooth case
+        if key == 'corrThresh' and 'smooth' in offsetFile:
+            scale = 2
+        else:
+            scale = 1
+        print(' -{0:s} {1:s} '.format(key, str(cullParams[key] * scale)),
               file=fpCull, end='')
     print(offsetFile, offsetFile+'.cull', file=fpCull)
 
@@ -108,7 +113,7 @@ def interpCommands(offsetFile, offTypes, offFiles, interpParams, fpCull,
 
 
 def makeCullFile(sensorInfo, offsetFile, orbit1, orbit2, frame, scaleFactor,
-                 register=False, myLog=None, fastCull=False):
+                 register=False, myLog=None, fastCull=False, noDatFiles=True):
     ''' make a script to runcull and interpolate the results for
     registration offsets'''
     if myLog is not None:
@@ -144,8 +149,9 @@ def makeCullFile(sensorInfo, offsetFile, orbit1, orbit2, frame, scaleFactor,
     #
     # copy dat files
     print('#', file=fpCull)
-    for datFile in datFiles:
-        print(f'cp {offsetFile}.dat {datFile}', file=fpCull)
+    if not noDatFiles: 
+        for datFile in datFiles:
+            print(f'cp {offsetFile}.dat {datFile}', file=fpCull)
     # fast cull interp
     if fastCull:
         # do the merge

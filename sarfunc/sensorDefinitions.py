@@ -48,7 +48,8 @@ class sensorDefinitions:
             deltaR, deltaA = 24, 24
             # w = window size, searchMult*maxOffsets = searchwindow range,
             # strackTol no fasttrack if all offs less this % of strack search
-            strackwParams = {'wr': 96, 'wa': 96, 'searchMult': 0.6,
+            # Changed from 0.6 to 1.8 10/9/23
+            strackwParams = {'wr': 96, 'wa': 96, 'searchMult': 1.8,
                              'navgr': 3, 'navga': 3, 'minFastPts': 20,
                              'minFastRange': 6}
             # registration offsets cull set params (cullst)
@@ -140,7 +141,8 @@ class sensorDefinitions:
             # w = window size, searchMult*maxOffsets = searchwindow range -
             # navg r is for smooth tracking
             # Changed searchMult from 0.5 to 1.2 3/8/2021 to allow melange
-            strackwParams = {'wr': 108, 'wa': 64, 'searchMult': 1.2,
+            # Changed searchMult from  1.2 to 1.8 10/10/2023 to allow melange
+            strackwParams = {'wr': 108, 'wa': 64, 'searchMult': 1.8,
                              'navgr': 5, 'navga': 1, 'minFastPts': 20,
                              'minFastRange': 6}
             # registration offsets cull set params (cullst)
@@ -153,8 +155,9 @@ class sensorDefinitions:
                           'sr': 9, 'sa': 2}
             # note this changes from prior 13by3 smoothing (both normal & fast)
             # Updated to open up 11/2/2021
+            # Added corrThresh 4/2/2024. Note will double the value for smooth
             fastCull = {'boxSize': 5, 'nGood': 7, 'maxA': 3, 'maxR': 9,
-                        'sr': 9, 'sa': 2}
+                        'sr': 9, 'sa': 2, 'corrThresh': 0.07}
             # registration interpolation params
             regInterp = {'flags': '-allowBreaks -padEdges -wdist ',
                          'thresh': 5000, 'ratThresh': 1}
@@ -228,8 +231,8 @@ class sensorDefinitions:
             deltaR, deltaA = 18, 12
             # w = window size, searchMult*maxOffsets = searchwindow range -
             # navg r is for smooth tracking
-            # Changed searchMult from 0.5 to 1.2 3/8/2021 to allow melange
-            strackwParams = {'wr': 108, 'wa': 64, 'searchMult': 1.2,
+            # Changed searchMult from 0.5 to 1.8 3/8/2021 to allow melange
+            strackwParams = {'wr': 108, 'wa': 64, 'searchMult': 1.8,
                              'navgr': 5, 'navga': 1, 'minFastPts': 20,
                              'minFastRange': 6}
             # registration offsets cull set params (cullst)
@@ -318,7 +321,8 @@ class sensorDefinitions:
             # step size for speckle tracking (e.g, output grid spacing)
             deltaR, deltaA = 24, 24
             # w = window size, searchMult*maxOffsets = searchwindow range
-            strackwParams = {'wr': 96, 'wa': 96, 'searchMult': 0.6, 'navgr': 3,
+            # Increased from 0.6 to 1.8 10/9/23
+            strackwParams = {'wr': 96, 'wa': 96, 'searchMult': 1.8, 'navgr': 3,
                              'navga': 3,  'minFastPts': 20, 'minFastRange': 6}
             # registration offsets cull set params (cullst)
             regCull = {'ignoreOffsets': '', 'boxSize': 5, 'nGood': 9,
