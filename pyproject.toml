@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sarfunc"
+version = "0.0.1"
+description = "Mosaicking utilities for fastice"
+authors = [
+    { name = "Ian Joughin", email = "irj@uw.edu" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+keywords = ["SAR", "NISAR", "GrIMP"]
+requires-python = ">=3.8"
+
+[tool.setuptools]
+packages = ["sarfunc"]
+
+[project.urls]
+Homepage = "https://github.com/fastice/sarfunc"
+Repository = "https://github.com/fastice/sarfunc"
+
+[project.scripts]
+
