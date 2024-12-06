@@ -100,10 +100,7 @@ class defaultRegionDefs:
         if regionFile is not None:
             try:
                 with open(regionFile) as fp:
-                    print('A')
                     result = yaml.load(fp, Loader=yaml.FullLoader)
-                    print('B')
-                    print(result)
                     self.region = result
                     return
             except Exception:
